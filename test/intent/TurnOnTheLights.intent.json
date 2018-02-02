@@ -1,0 +1,7 @@
+{
+  "utterance": "lights on",
+  "intent_type": "TurnOnTheLightsIntent",
+  "intent": {
+    "TurnOnTheLightsKeyword": "turn on the lights"
+  }
+}
