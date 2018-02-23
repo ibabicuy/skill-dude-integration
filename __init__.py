@@ -31,6 +31,7 @@ from adapt.intent import IntentBuilder
 from mycroft import intent_handler
 from mycroft.skills.core import MycroftSkill
 from mycroft.util.log import getLogger
+from dude_settings import dude_settings
 
 __author__ = 'ibabic.uy'
 
@@ -56,15 +57,10 @@ class DUDESkill(MycroftSkill):
             require("TurnOnTheLightsKeyword").build()
         self.register_intent(turn_on_the_lights, self.handle_turn_on_the_lights_intent)
 
-        how_are_you_intent = IntentBuilder("HowAreYouIntent").\
-            require("HowAreYouKeyword").build()
-        self.register_intent(how_are_you_intent,
-                             self.handle_how_are_you_intent)
+        turn_off_the_lights = IntentBuilder("TurnOffTheLightsIntent").\
+            require("TurnOffTheLightsKeyword").build()
+        self.register_intent(turn_off_the_lights, self.handle_turn_off_the_lights_intent)
 
-        hello_world_intent = IntentBuilder("HelloWorldIntent").\
-            require("HelloWorldKeyword").build()
-        self.register_intent(hello_world_intent,
-                             self.handle_hello_world_intent)
 
     # The "handle_xxxx_intent" functions define Mycroft's behavior when
     # each of the skill's intents is triggered: in this case, he simply
@@ -73,13 +69,29 @@ class DUDESkill(MycroftSkill):
     # of a file in the dialog folder, and Mycroft speaks its contents when
     # the method is called.  
     def handle_turn_on_the_lights_intent(self, message):
-        self.speak_dialog("welcome")
+        payload = {
+            "state": 1,
+            "device_id": 12395613
+            }
+        response = self.send_command_to_dude(payload, 'set_switch_state')
+        self.speak_dialog("turn.on.the.lights")
 
-    def handle_how_are_you_intent(self, message):
-        self.speak_dialog("how.are.you")
+    def handle_turn_off_the_lights_intent(self, message):
+        payload = {
+            "state": 0,
+            "device_id": 12395613
+            }
+        response = self.send_command_to_dude(payload, 'set_switch_state')
+        self.speak_dialog("turn.off.the.lights")
 
-    def handle_hello_world_intent(self, message):
-        self.speak_dialog("hello.world")
+    def send_command_to_dude(self, payload, endpoint):
+        url = "http://" + dude_settings["FLASK_URL"]  + "/{}".format(endpoint)
+        headers = {
+            'content-type': "application/json",
+            'authentication-token': dude_settings["FLASK_AUTH_TOKEN"]
+        }
+
+        return requests.request("POST", url, json=payload, headers=headers)
 
     # The "stop" method defines what Mycroft does when told to stop during
     # the skill's execution. In this case, since the skill's functionality
