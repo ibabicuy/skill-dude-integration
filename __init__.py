@@ -31,13 +31,18 @@ from adapt.intent import IntentBuilder
 from mycroft import intent_handler
 from mycroft.skills.core import MycroftSkill
 from mycroft.util.log import getLogger
-from dude_settings import dude_settings
 
 __author__ = 'ibabic.uy'
 
 # Logger: used for debug lines, like "LOGGER.debug(xyz)". These
 # statements will show up in the command line when running Mycroft.
 LOGGER = getLogger(__name__)
+
+dude_settings = {
+    "FLASK_AUTH_TOKEN": "f1a8659701bbbc7196940761c1d55c3b9a25fb6569a863df",
+    "FLASK_URL": "192.168.1.108:5000",
+    "FLASK_PORT": "5000"
+}
 
 # The logic of each skill is contained within its own class, which inherits
 # base methods from the MycroftSkill class with the syntax you can see below:
